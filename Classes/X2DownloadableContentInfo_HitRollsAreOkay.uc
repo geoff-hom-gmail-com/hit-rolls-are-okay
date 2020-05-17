@@ -74,9 +74,7 @@ static event OnExitPostMissionSequence()
 /// </summary>
 static event OnPostTemplatesCreated()
 {
-	`log("             -----------1 The mod 'Hit Rolls are Okay' is running! X2DownloadableContentInfo_HitRollsAreOkay.OnPostTemplatesCreated()---------", , 'XCom_HitRolls');
-	`log("             -----------2 The mod 'Hit Rolls are Okay' is running! X2DownloadableContentInfo_HitRollsAreOkay.OnPostTemplatesCreated()---------", , 'XCom_XP');
-
+	`log("           -----------The mod 'Hit Rolls are Okay' is running! X2DownloadableContentInfo_HitRollsAreOkay.OnPostTemplatesCreated()---------", , 'XCom_Maps');
 }
 
 /// <summary>

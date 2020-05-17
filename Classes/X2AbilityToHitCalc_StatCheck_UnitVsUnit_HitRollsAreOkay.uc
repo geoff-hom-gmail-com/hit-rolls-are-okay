@@ -9,24 +9,26 @@ function RollForAbilityHit(XComGameState_Ability kAbility, AvailableTarget kTarg
 	local StatContestOverrideData StatContestOverrideInfo;
 	local X2AbilityTemplate AbilityTemplate;
 
-	`log("--------------------", , 'XCom_HitRolls');
-	`log("X2AbilityToHitCalc_StatCheck_UnitVsUnit_HitRollsAreOkay.RollForAbilityHit()", , 'XCom_HitRolls');
+	`log("---", , 'XCom_Maps');
+	`log("X2AbilityToHitCalc_StatCheck_UnitVsUnit_HitRollsAreOkay.RollForAbilityHit()", , 'XCom_Maps');
 
-	// "RollForAbilityHit: Ability [BreakerSmashImpairingAbility], Target [??]"
-	`log("RollForAbilityHit: Ability [" $ kAbility.GetMyTemplateName() $ "], Target [" $ kTarget.PrimaryTarget.ObjectID $ "]", , 'XCom_HitRolls');
-	
-	// hmm, I don't want this for every unitvsUnit stat check... well, I could filter by ability name.
+	// "Ability [BreakerSmashImpairingAbility], Target [12345]"
+	// PrimaryTarget isn't a unit, so can't get name? Tried casting to a unit but didn't work. 
+	`log("Ability [" $ kAbility.GetMyTemplateName() $ "], Target [" $ kTarget.PrimaryTarget.ObjectID $ "]", , 'XCom_Maps');
+
+	// If don't want this for every unitvsUnit stat check... well, could filter by ability name. (5.16.2020; geoffhom)
 
 	if (kTarget.PrimaryTarget.ObjectID > 0)
 	{
+		// "Attack Value [90], Defend Value [50], Target Roll [115]"
 		AttackVal = GetAttackValue(kAbility, kTarget.PrimaryTarget);
 		DefendVal = GetDefendValue(kAbility, kTarget.PrimaryTarget);
 		TargetRoll = BaseValue + AttackVal - DefendVal;
-		`log("Attack Value:" @ AttackVal @ "Defend Value:" @ DefendVal @ "Target Roll:" @ TargetRoll,,'XCom_HitRolls');
+		`log("Attack Value [" $ AttackVal $ "], Defend Value [" $ DefendVal $ "], Target Roll [" $ TargetRoll $ "]",,'XCom_Maps');
 		if (TargetRoll < 100)
 		{
 			RandRoll = `SYNC_RAND(100);
-			`log("Random roll:" @ RandRoll,,'XCom_HitRolls');
+			`log("Random roll [" $ RandRoll $ "]",,'XCom_Maps');
 			if (RandRoll < TargetRoll)
 				ResultContext.HitResult = eHit_Success;
 			else
@@ -36,13 +38,13 @@ function RollForAbilityHit(XComGameState_Ability kAbility, AvailableTarget kTarg
 		{
 			ResultContext.HitResult = eHit_Success;
 		}
-		`log("Result:" @ ResultContext.HitResult,,'XCom_HitRolls');
+		`log("Result [" $ ResultContext.HitResult $ "]",,'XCom_Maps');
 		if (class'XComGameStateContext_Ability'.static.IsHitResultHit(ResultContext.HitResult))
 		{
 			ResultContext.StatContestResult = RollForEffectTier(kAbility, kTarget.PrimaryTarget, false);
 
 			// "StatContestResult [5]"
-			`Log("StatContestResult [" $ ResultContext.StatContestResult $ "]", , 'XCom_HitRolls');
+			`log("StatContestResult [" $ ResultContext.StatContestResult $ "]", , 'XCom_Maps');
 		}
 	}
 	else
@@ -52,12 +54,12 @@ function RollForAbilityHit(XComGameState_Ability kAbility, AvailableTarget kTarg
 
 	if( `CHEATMGR != None && `CHEATMGR.bDeadEyeStats )
 	{
-		`log("DeadEyeStats cheat forcing a hit.", true, 'XCom_HitRolls');
+		`log("DeadEyeStats cheat forcing a hit.", true, 'XCom_Maps');
 		ResultContext.HitResult = eHit_Success;
 	}
 	else if( `CHEATMGR != None && `CHEATMGR.bNoLuckStats )
 	{
-		`log("NoLuckStats cheat forcing a miss.", true, 'XCom_HitRolls');
+		`log("NoLuckStats cheat forcing a miss.", true, 'XCom_Maps');
 		ResultContext.HitResult = eHit_Miss;
 	}
 	if( `CHEATMGR != None && `CHEATMGR.bForceAttackRollValue )
@@ -75,15 +77,15 @@ function RollForAbilityHit(XComGameState_Ability kAbility, AvailableTarget kTarg
 
 	for (MultiTargetIndex = 0; MultiTargetIndex < kTarget.AdditionalTargets.Length; ++MultiTargetIndex)
 	{
-		`log("Roll against multi target" @ kTarget.AdditionalTargets[MultiTargetIndex].ObjectID,,'XCom_HitRolls');
+		`log("Roll against multi target" @ kTarget.AdditionalTargets[MultiTargetIndex].ObjectID,,'XCom_Maps');
 		AttackVal = GetAttackValue(kAbility, kTarget.AdditionalTargets[MultiTargetIndex]);
 		DefendVal = GetDefendValue(kAbility, kTarget.AdditionalTargets[MultiTargetIndex]);
 		TargetRoll = BaseValue + AttackVal - DefendVal;
-		`log("Attack Value:" @ AttackVal @ "Defend Value:" @ DefendVal @ "Target Roll:" @ TargetRoll,,'XCom_HitRolls');
+		`log("Attack Value:" @ AttackVal @ "Defend Value:" @ DefendVal @ "Target Roll:" @ TargetRoll,,'XCom_Maps');
 		if (TargetRoll < 100)
 		{
 			RandRoll = `SYNC_RAND(100);
-			`log("Random roll:" @ RandRoll,,'XCom_HitRolls');
+			`log("Random roll:" @ RandRoll,,'XCom_Maps');
 			if (RandRoll < TargetRoll)
 				ResultContext.MultiTargetHitResults.AddItem(eHit_Success);
 			else
@@ -93,7 +95,7 @@ function RollForAbilityHit(XComGameState_Ability kAbility, AvailableTarget kTarg
 		{
 			ResultContext.MultiTargetHitResults.AddItem(eHit_Success);
 		}
-		`log("Result:" @ ResultContext.HitResult,,'XCom_HitRolls');
+		`log("Result:" @ ResultContext.HitResult,,'XCom_Maps');
 		if (class'XComGameStateContext_Ability'.static.IsHitResultHit(ResultContext.HitResult))
 		{
 			StatContestResultValue = RollForEffectTier(kAbility, kTarget.AdditionalTargets[MultiTargetIndex], true);
@@ -132,19 +134,21 @@ function int RollForEffectTier(XComGameState_Ability kAbility, StateObjectRefere
 	local array<float> TierValues;
 	local float TierValue, LowTierValue, HighTierValue, TierValueSum, RandRoll;
 
-	`log("RollForEffectTier", , 'XCom_HitRolls');
+	`log("---", , 'XCom_Maps');
+	`log("RollForEffectTier", , 'XCom_Maps');
 
 	AbilityTemplate = kAbility.GetMyTemplate();
 	if (TargetRef.ObjectID > 0)
 	{
-		`log("=RollForEffectTier=");
 		AttackVal = GetAttackValue(kAbility, TargetRef);
 		DefendVal = GetDefendValue(kAbility, TargetRef);
 		if (bMultiTarget)
 			MaxTier = GetHighestTierPossible(AbilityTemplate.AbilityMultiTargetEffects);
 		else
 			MaxTier = GetHighestTierPossible(AbilityTemplate.AbilityTargetEffects);
-		`log("Attack Value:" @ AttackVal @ "Defend Value:" @ DefendVal @ "Max Tier:" @ MaxTier,,'XCom_HitRolls');
+
+		// "Attack Value [90], Defend Value [50], Max Tier [5]"
+		`log("Attack Value [" $ AttackVal $ "], Defend Value [" $ DefendVal $ "], Max Tier [" $ MaxTier $ "]",,'XCom_Maps');
 
 		//  It's possible the ability only cares about success or failure and has no specified ladder of results
 		if (MaxTier < 0)
@@ -171,7 +175,7 @@ function int RollForEffectTier(XComGameState_Ability kAbility, StateObjectRefere
 				TierValues.AddItem(HighTierValue);
 			}			
 			TierValueSum += TierValues[TierValues.Length - 1];
-			`log("Tier" @ Idx $ ":" @ TierValues[TierValues.Length - 1],,'XCom_HitRolls');
+			`log("Tier" @ Idx $ ":" @ TierValues[TierValues.Length - 1],,'XCom_Maps');
 		}
 		//  Normalize the tier values
 		for (Idx = 0; Idx < TierValues.Length; ++Idx)
@@ -180,19 +184,19 @@ function int RollForEffectTier(XComGameState_Ability kAbility, StateObjectRefere
 			if (Idx > 0)
 				TierValues[Idx] += TierValues[Idx - 1];
 
-			`log("Normalized Tier" @ Idx $ ":" @ TierValues[Idx],,'XCom_HitRolls');
+			`log("Normalized Tier" @ Idx $ ":" @ TierValues[Idx],,'XCom_Maps');
 		}
 		RandRoll = `SYNC_FRAND;
-		`log("Random roll:" @ RandRoll,,'XCom_HitRolls');
+		`log("Random roll [" $ RandRoll $ "]",,'XCom_Maps');
 		for (Idx = 0; Idx < TierValues.Length; ++Idx)
 		{
 			if (RandRoll < TierValues[Idx])
 			{
-				`log("Matched tier" @ Idx,,'XCom_HitRolls');
+				`log("Matched tier [" $ Idx $ "]",,'XCom_Maps');
 				return Idx + 1;     //  the lowest possible tier is 1, not 0
 			}
 		}
-		`log("Matched highest tier",,'XCom_HitRolls');
+		`log("Matched highest tier",,'XCom_Maps');
 		return TierValues.Length;
 	}
 	return 0;

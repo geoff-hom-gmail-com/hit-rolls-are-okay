@@ -21,19 +21,19 @@ function name AftershockSmash_ApplyChanceCheck(const out EffectAppliedData Apply
 	SourceStrength = SourceUnit.GetCurrentStat(eStat_Strength);
 	TargetStrength = TargetUnit.GetCurrentStat(eStat_Strength);
 
-	`log("--------------------", , 'XCom_HitRolls');
-	`log("          AftershockSmash_ApplyChanceCheck--------------------", , 'XCom_XP');
-	`log("          AftershockSmash_ApplyChanceCheck--------------------", , 'GeoffTest');
+	`log("           ---", , 'XCom_Maps');
+	`log("           ------------X2Ability_Breaker_HitRollsAreOkay.AftershockSmash_ApplyChanceCheck()------------", , 'XCom_Maps');
+	`log("           ------------If have both Aftershock and Fear Factor, then Aftershock is rolled first.------------", , 'XCom_Maps');
 
-	// "AftershockSmash_ApplyChanceCheck (Aftershock damage rolled before Fear Factor): Source [Axiom, STR [90]], Target [Purifier, STR [50]]"
-	`Log("AftershockSmash_ApplyChanceCheck (Aftershock rolled before Fear Factor): Source [" $ SourceUnit.GetNickName(true) $ ", STR [" $ int(SourceStrength) $ "]], Target [" $ TargetUnit.GetFullName() $ ", STR [" $ int(TargetStrength) $ "]]", , 'XCom_HitRolls');
+	// "Source [Axiom, STR [90]], Target [Purifier, STR [50]]"
+	`log("           Source [" $ SourceUnit.GetNickName(true) $ ", STR [" $ int(SourceStrength) $ "]], Target [" $ TargetUnit.GetFullName() $ ", STR [" $ int(TargetStrength) $ "]]", , 'XCom_Maps');
 
 	RolledChance = `SYNC_RAND(100);
 	TargetChance = default.BREAKER_AFTERSHOCK_BASE_CHANCE + SourceStrength - TargetStrength;
 
-	// "AftershockSmash_ApplyChanceCheck: TargetChance [90], RolledChance [?], Result [Hit!/Miss!]"
+	// "TargetChance [90], RolledChance [?], Result [Hit!/Miss!]"
 	Result = RolledChance <= TargetChance ? "Hit!" : "Miss!";
-	`Log("AftershockSmash_ApplyChanceCheck: TargetChance [" $ int(TargetChance) $ "], RolledChance [" $ int(RolledChance) $ "], Result [" $ Result $ "]", , 'XCom_HitRolls');
+	`log("           TargetChance [" $ int(TargetChance) $ "], RolledChance [" $ int(RolledChance) $ "], Result [" $ Result $ "]", , 'XCom_Maps');
 
 	if (RolledChance <= TargetChance)
 	{
