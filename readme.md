@@ -1,37 +1,39 @@
 #  # Hit Rolls are Okay README
 
   This is the README for the XCOM: Chimera Squad mod, 'Hit Rolls are Okay.' 
+    
+  If you look at the SDK, there are log statements for many things, including hit rolls. You'd think you could activate these log statements via Engine.ini and the "-Suppress" command. However, that doesn't work. I think that's because all the log statements are stripped upon final release. 
   
-  TODO: update below.
+  If you want to learn more about how the game actually works, what can you do? 
+
+  This mod restores the ability to log hit-roll info in some cases. 
   
-  The game has a bug where kills are rewarded XP but captures aren't. What kind of message is that sending? This mod is to fix that bug.
+  In particular, Axiom's Smash, Aftershock, and Fear Factor. Because that's what I'm interested in. Anything that uses those hit-roll mechanics may also be logged.
+
+  By default, this mod turns on the logging, which can be seen in the Launch log and the Combat log. 
   
   ## Features
   
-  The trivial way for Firaxis to fix this bug is to add a variable like XComGameState_Unit.CapturedUnitsLastMission, then update it each time a unit goes unconscious. Then modify X2ExperienceConfig.AwardMissionXP(). 
+  The trivial way for Firaxis to fix this bug is to leave the logging statements in, and just turn off the logging via Engine.ini and "+Suppress." Ironically, Firaxis already does the latter, but not the former. 
   
-  As mods can't modify XComGameState_Unit directly, I'm using a workaround. I override AwardMissionXP(), and I get the captures count via XComGameState_Unit.WetWorkKills. How/why? It's an unused variable. I reset the variable after the event 'OnUnitBeginPlay.' 
+  Mods can't modify the source code directly, so the workaround is to add to it:
+
+  > I override X2Ability_Breaker.AftershockSmash_ApplyChanceCheck(), which rolls for both Aftershock and Fear Factor. 
+
+  > I also override X2AbilityToHitCalc_StatCheck_UnitVsUnit.RollForAbilityHit() and RollForEffectTier(), which roll the effect for Smash. 
+
+  If there's a bug with this mod, you can post to reddit (e.g., xcom2mods) or email me at geoff.hom@gmail.com. Please include the Combat and/or Launch logs. 
   
-  The variable is set after the event 'TacticalGameEnd.' 
-  I'm assuming the captor is the same as unconsciousUnit.LastDamagedByUnitID. So far, that seems to work.
+  > Tip: To turn off the logging, go into Engine.ini and add "+Suppress=XCom_HitRolls." (TODO: or remove -suppress?) 
   
-  Note: I wanted to set WetWorkKills after the event 'UnitUnconscious.' But changes to WetWorkKills wouldn't persist. I don't know enough about GameStates, etc. to know how to fix that.
-  On the bright side, if you install the mod and load a game mid-mission, it should run fine!
+  > Tip: Smash's impairment tests Axiom's STR vs opponent's Will. If it procs, then another roll is made to see which impairment is used. This second roll is also affected by STR vs Will.
+
+  > Tip: Aftershock's description says there's a chance to proc impairment on nearby enemies. This isn't true so far (5.16.2020). Only Smash's target can be impaired. 
   
-  Note: OnPreMission() and OnPostMission() hooks don't work in Chimera Squad.
-  
-  > Tip: The mod logs XP gains in the Balance log. There is also a mod in the Steam Workshop to show XP in the Armory. You can combine these to make sure the mod is working. If you find a bug, please include such logs/Armory pics. You can post to reddit (e.g., xcom2mods) or email me at geoffhom@gmail.com.
-  
-  > Tip: There's a bug in XComGameState_Unit.OnUnitUnconscious(). What it refers to as the 'Captor' is actually the unit that was knocked unconscious. So don't trust CapturedUnitsLastTurn and CapturedUnits.
-  
-  > Tip: Kill/Capture XP is rounded. So 2 kills/captures = 0.5, rounded to 1 XP. 5 kills/captures = 1.25, rounded to 1 XP.
+  > Tip: Fear Factor tests STR vs STR. FF can proc even if Smash misses. It's often easier to Panic all nearby enemies than to impair the Smash target.
   
   > Tip: Mod code is at https://github.com/geoffhom/captures-are-okay. 
   
   ## Requirements
   
-  The mod overrides X2ExperienceConfig.AwardMissionXP(). 
-  
-  It also writes to XComGameState_Unit.WetWorkKills, as I think this is unused in Chimera Squad.
-  
-  This mod listens to the events 'OnUnitBeginPlay' and 'TacticalGameEnd.'
+  The mod overrides X2Ability_Breaker.AftershockSmash_ApplyChanceCheck(), and also X2AbilityToHitCalc_StatCheck_UnitVsUnit.RollForAbilityHit() and RollForEffectTier(). 
