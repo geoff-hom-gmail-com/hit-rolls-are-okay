@@ -21,7 +21,9 @@ function name AftershockSmash_ApplyChanceCheck(const out EffectAppliedData Apply
 	SourceStrength = SourceUnit.GetCurrentStat(eStat_Strength);
 	TargetStrength = TargetUnit.GetCurrentStat(eStat_Strength);
 
-	`Log("--------------------", , 'XCom_HitRolls');
+	`log("--------------------", , 'XCom_HitRolls');
+	`log("          AftershockSmash_ApplyChanceCheck--------------------", , 'XCom_XP');
+	`log("          AftershockSmash_ApplyChanceCheck--------------------", , 'GeoffTest');
 
 	// "AftershockSmash_ApplyChanceCheck (Aftershock damage rolled before Fear Factor): Source [Axiom, STR [90]], Target [Purifier, STR [50]]"
 	`Log("AftershockSmash_ApplyChanceCheck (Aftershock rolled before Fear Factor): Source [" $ SourceUnit.GetNickName(true) $ ", STR [" $ int(SourceStrength) $ "]], Target [" $ TargetUnit.GetFullName() $ ", STR [" $ int(TargetStrength) $ "]]", , 'XCom_HitRolls');

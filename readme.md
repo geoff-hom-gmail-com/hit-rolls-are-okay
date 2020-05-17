@@ -32,7 +32,7 @@
   
   > Tip: Fear Factor tests STR vs STR. FF can proc even if Smash misses. It's often easier to Panic all nearby enemies than to impair the Smash target.
   
-  > Tip: Mod code is at https://github.com/geoffhom/captures-are-okay. 
+  > Tip: Mod code is at https://github.com/geoffhom/hit-rolls-are-okay. 
   
   ## Requirements
   
